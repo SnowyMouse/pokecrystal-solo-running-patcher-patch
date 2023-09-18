@@ -57,6 +57,13 @@ _CheckTrainerBattle::
 	cp b
 	jr c, .next
 
+; ANTI-SPINNER MOD: if this is a random spinner, look away and abort
+.rerotateSpinnerModBegin
+	call .denyspin
+	jr z, .next
+.rerotateSpinnerModEnd
+; END ANTI-SPINNER MOD
+
 ; And hasn't already been beaten
 	push bc
 	push de
@@ -99,6 +106,29 @@ _CheckTrainerBattle::
 	ld a, c
 	ld [wSeenTrainerDirection], a
 	jr LoadTrainer_continue
+
+; ANTI-SPINNER MOD: Check if the spinner should look away from the player if they are facing it (returns)
+.denyspin
+	ld hl, MAPOBJECT_MOVEMENT
+	add hl, de
+	ld a, [hl]
+	cp SPRITEMOVEDATA_SPINRANDOM_FAST
+	jr z, .dodeny
+	cp SPRITEMOVEDATA_SPINRANDOM_SLOW
+	ret nz
+.dodeny
+	ld hl, MAPOBJECT_OBJECT_STRUCT_ID
+	add hl, de
+	ld a, [hl]
+	call GetObjectStruct
+	ld bc, OBJECT_DIRECTION
+	add hl, bc
+	ld a, [hl]
+	xor $FF
+	ld [hl], a
+	xor a
+	ret
+; END ANTI-SPINNER MOD
 
 TalkToTrainer::
 	ld a, 1

@@ -584,6 +584,14 @@ MovementFunction_RandomSpinSlow:
 	ld hl, OBJECT_DIRECTION
 	add hl, bc
 	ld [hl], a
+
+; ANTI-SPINNER MOD: If the object is facing the place, reroll for a new direction
+.checkDirectionBeginMod
+	call FacingPlayerDistance
+	jr c, MovementFunction_RandomSpinSlow
+.checkDirectionEndMod
+; END ANTI-SPINNER MOD
+
 	jp RandomStepDuration_Slow
 
 MovementFunction_RandomSpinFast:
@@ -600,6 +608,14 @@ MovementFunction_RandomSpinFast:
 	xor %00001100
 .keep
 	ld [hl], a
+
+; ANTI-SPINNER MOD: If the object is facing the place, reroll for a new direction
+.checkDirectionBeginMod
+	call FacingPlayerDistance
+	jr c, MovementFunction_RandomSpinFast
+.checkDirectionEndMod
+; END ANTI-SPINNER MOD
+
 	jp RandomStepDuration_Fast
 
 MovementFunction_Standing:
