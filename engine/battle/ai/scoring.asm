@@ -1778,6 +1778,13 @@ AI_Smart_MeanLook:
 
 AICheckLastPlayerMon:
 	ld a, [wPartyCount]
+
+; BEGIN TRUE-SOLO MOD: MAKE IT SO THE AI THINKS YOU HAVE ONE PARTY MEMBER
+.trueSoloBeginMod
+	ld a, 1
+.trueSoloEndMod
+; END TRUE-SOLO MOD
+
 	ld b, a
 	ld c, 0
 	ld hl, wPartyMon1HP

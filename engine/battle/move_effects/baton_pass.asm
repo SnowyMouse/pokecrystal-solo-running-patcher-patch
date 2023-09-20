@@ -164,6 +164,13 @@ ResetBatonPassStatus:
 CheckAnyOtherAlivePartyMons:
 	ld hl, wPartyMon1HP
 	ld a, [wPartyCount]
+
+; BEGIN TRUE-SOLO MOD: NO OTHER ALIVE PARTY MEMBERS
+.trueSoloBeginMod
+	ld a, 1
+.trueSoloEndMod
+; END TRUE-SOLO MOD
+
 	ld d, a
 	ld a, [wCurBattleMon]
 	ld e, a

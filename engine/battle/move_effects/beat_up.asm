@@ -20,6 +20,13 @@ BattleCommand_BeatUp:
 	ld a, [wPlayerRolloutCount]
 	ld b, a
 	ld a, [wPartyCount]
+
+; BEGIN TRUE-SOLO MOD: BEAT UP ONLY WORKS WITH 1 PARTY MEMBER
+.trueSoloBeginMod
+	ld a, 1
+.trueSoloEndMod
+; END TRUE-SOLO MOD
+
 	sub b
 	ld [wCurBeatUpPartyMon], a
 
