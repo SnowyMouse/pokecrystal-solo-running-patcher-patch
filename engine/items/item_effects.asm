@@ -246,6 +246,13 @@ PokeBallEffect:
 	jp z, .catch_without_fail
 	ld a, [wCurItem]
 	cp MASTER_BALL
+
+	; MASTER BALL MOD: ALL BALLS WORK LIKE MASTER BALLS
+.masterBallModStart
+	xor a
+.masterBallModEnd
+	; END OF MASTER BALL MOD
+
 	jp z, .catch_without_fail
 	ld a, [wCurItem]
 	ld c, a

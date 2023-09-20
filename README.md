@@ -13,3 +13,5 @@ This is a disassembly of Pokémon Crystal with patches for making the solo chall
   party member, and Baton Pass will fail.
 
 * **True-solo (visual):** Only one ball is displayed for your party when you enter a battle. This is purely visual.
+
+* **Master Ball:** All balls work like Master Balls and catch without fail.
