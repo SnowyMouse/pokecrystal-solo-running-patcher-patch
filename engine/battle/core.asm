@@ -3628,10 +3628,11 @@ CheckPlayerPartyForFitMon:
 ; Has the player any mon in his Party that can fight?
 	ld a, [wPartyCount]
 
-; TRUE-SOLO MOD: MAKE IT SO ONLY THE FIRST PARTY MEMBER IS CHECKED FOR IF YOU SHOULD WHITE OUT
+; BEGIN TRUE-SOLO MOD: MAKE IT SO ONLY THE FIRST PARTY MEMBER IS CHECKED FOR IF YOU SHOULD WHITE OUT
 .trueSoloBeginMod
 	ld a, 1
 .trueSoloEndMod
+; END TRUE-SOLO MOD
 
 	ld e, a
 	xor a

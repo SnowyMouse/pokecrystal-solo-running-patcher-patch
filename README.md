@@ -15,3 +15,7 @@ This is a disassembly of Pokémon Crystal with patches for making the solo chall
 * **True-solo (visual):** Only one ball is displayed for your party when you enter a battle. This is purely visual.
 
 * **Master Ball:** All balls work like Master Balls and catch without fail.
+
+* **No early encounters:** Encounters are turned off in Routes 29-32 and Sprout Tower until you talk to Kurt. Caves
+  and optional areas are left on for you to train in. Note that you can obtain a Repel in Route 31 if you want to turn
+  off encounters for Union Cave.

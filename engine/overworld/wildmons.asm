@@ -175,6 +175,8 @@ FindNest:
 
 TryWildEncounter::
 ; Try to trigger a wild encounter.
+	call DisableEarlyEncounters
+	jr nz, .no_battle
 	call .EncounterRate
 	jr nc, .no_battle
 	call ChooseWildEncounter
@@ -199,6 +201,46 @@ TryWildEncounter::
 	call Random
 	cp b
 	ret
+
+EarlyMapsToDisableEncounters:
+	db MAPGROUP_NEW_BARK,    MAP_ROUTE_29
+	db MAPGROUP_CHERRYGROVE, MAP_ROUTE_30
+	db MAPGROUP_CHERRYGROVE, MAP_ROUTE_31
+	db MAPGROUP_VIOLET,      MAP_ROUTE_32
+	db MAPGROUP_DUNGEONS,    MAP_SPROUT_TOWER_1F
+	db MAPGROUP_DUNGEONS,    MAP_SPROUT_TOWER_2F
+	db MAPGROUP_DUNGEONS,    MAP_SPROUT_TOWER_3F
+	db 0
+
+DisableEarlyEncounters:
+	; Check if Kurt has been spoken to
+	ld de, EVENT_AZALEA_TOWN_SLOWPOKETAIL_ROCKET
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	ret nz
+
+	; Get the map and map group
+	ld a, [wMapGroup]
+	ld b, a
+	ld a, [wMapNumber]
+	ld c, a
+
+	; Begin looping
+	ld hl, EarlyMapsToDisableEncounters
+.loop
+	ld a, [hl+]
+	and a
+	ret z ; end of list
+	cp b
+	ld a, [hl+]
+	jr nz, .loop
+	cp c
+	jr nz, .loop
+	and a
+	ret
+
 
 GetMapEncounterRate:
 	ld hl, wMornEncounterRate
