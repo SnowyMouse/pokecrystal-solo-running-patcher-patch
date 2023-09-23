@@ -3625,15 +3625,14 @@ ResetEnemyStatLevels:
 	ret
 
 CheckPlayerPartyForFitMon:
+
 ; Has the player any mon in his Party that can fight?
-	ld a, [wPartyCount]
-
-; BEGIN TRUE-SOLO MOD: MAKE IT SO ONLY THE FIRST PARTY MEMBER IS CHECKED FOR IF YOU SHOULD WHITE OUT
-.trueSoloBeginMod
+	ld a, [ModSoloModSettings]
+	bit MOD_SOLO_MOD_BLACKOUT_AUTOMATICALLY, a
 	ld a, 1
-.trueSoloEndMod
-; END TRUE-SOLO MOD
-
+	jr nz, .next
+	ld a, [wPartyCount]
+.next
 	ld e, a
 	xor a
 	ld hl, wPartyMon1HP

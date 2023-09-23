@@ -19,14 +19,14 @@ BattleCommand_BeatUp:
 .next_mon
 	ld a, [wPlayerRolloutCount]
 	ld b, a
+
+	ld a, [ModSoloModSettings]
+	bit MOD_SOLO_MOD_AI_MODIFICATIONS, a
+	ld a, 1
+	jr nz, .next
 	ld a, [wPartyCount]
 
-; BEGIN TRUE-SOLO MOD: BEAT UP ONLY WORKS WITH 1 PARTY MEMBER
-.trueSoloBeginMod
-	ld a, 1
-.trueSoloEndMod
-; END TRUE-SOLO MOD
-
+.next
 	sub b
 	ld [wCurBeatUpPartyMon], a
 

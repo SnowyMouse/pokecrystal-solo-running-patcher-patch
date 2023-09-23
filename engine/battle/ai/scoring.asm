@@ -1777,14 +1777,13 @@ AI_Smart_MeanLook:
 	ret
 
 AICheckLastPlayerMon:
+	ld a, [ModSoloModSettings]
+	bit MOD_SOLO_MOD_AI_MODIFICATIONS, a
+	ld a, 1
+	jr nz, .next
 	ld a, [wPartyCount]
 
-; BEGIN TRUE-SOLO MOD: MAKE IT SO THE AI THINKS YOU HAVE ONE PARTY MEMBER
-.trueSoloBeginMod
-	ld a, 1
-.trueSoloEndMod
-; END TRUE-SOLO MOD
-
+.next
 	ld b, a
 	ld c, 0
 	ld hl, wPartyMon1HP

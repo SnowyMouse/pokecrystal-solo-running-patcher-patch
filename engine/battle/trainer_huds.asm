@@ -14,15 +14,18 @@ EnemySwitch_TrainerHud:
 	call LoadBallIconGFX
 	jp ShowOTTrainerMonsRemaining
 
-TrueSoloPartyCount: db 1
+One: db 1
 ShowPlayerMonsRemaining:
 	call DrawPlayerPartyIconHUDBorder
 	ld hl, wPartyMon1HP
+
+	ld a, [ModSoloModSettings]
+	bit MOD_SOLO_MOD_VISUAL, a
+	ld de, One
+	jr nz, .next
 	ld de, wPartyCount
-; TRUE-SOLO VISUAL MOD: MAKE IT SO ONLY THE FIRST PARTY MEMBER IS SHOWN IN BATTLE HUDS
-.onePartyMemberModStart
-	ld de, TrueSoloPartyCount
-.onePartyMemberModEnd
+
+.next
 	call StageBallTilesData
 	; ldpixel wPlaceBallsX, 12, 12
 	ld a, 12 * TILE_WIDTH

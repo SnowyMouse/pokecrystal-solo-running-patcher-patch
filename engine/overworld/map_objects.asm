@@ -577,21 +577,18 @@ MovementFunction_RandomWalkXY:
 	and %00000011
 	jp _RandomWalkContinue
 
-MovementFunction_RandomSpinSlow:
+GetRandomDirection:
 	call Random
 	ldh a, [hRandomAdd]
 	and %00001100
+	ret
+
+MovementFunction_RandomSpinSlow:
+	call GetRandomDirection
 	ld hl, OBJECT_DIRECTION
 	add hl, bc
 	ld [hl], a
-
-; ANTI-SPINNER MOD: If the object is facing the place, reroll for a new direction
-.checkDirectionBeginMod
-	call FacingPlayerDistance
-	jr c, MovementFunction_RandomSpinSlow
-.checkDirectionEndMod
-; END ANTI-SPINNER MOD
-
+	call AntiSpinnerMod
 	jp RandomStepDuration_Slow
 
 MovementFunction_RandomSpinFast:
@@ -600,23 +597,27 @@ MovementFunction_RandomSpinFast:
 	ld a, [hl]
 	and %00001100
 	ld d, a
-	call Random
-	ldh a, [hRandomAdd]
-	and %00001100
+	call GetRandomDirection
 	cp d
 	jr nz, .keep
 	xor %00001100
 .keep
 	ld [hl], a
-
-; ANTI-SPINNER MOD: If the object is facing the place, reroll for a new direction
-.checkDirectionBeginMod
-	call FacingPlayerDistance
-	jr c, MovementFunction_RandomSpinFast
-.checkDirectionEndMod
-; END ANTI-SPINNER MOD
-
+	call AntiSpinnerMod
 	jp RandomStepDuration_Fast
+
+AntiSpinnerMod:
+	and a
+	ld a, [ModRNGSettings]
+	bit MOD_RNG_SPINNERS_DISABLED, a
+	ret z
+	push hl
+	call FacingPlayerDistance
+	pop hl
+	ret nc
+	xor %00001100 ; flip the direction
+	ld [hl], a
+	ret
 
 MovementFunction_Standing:
 	call CopyLastCoordsToCoords

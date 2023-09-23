@@ -5171,12 +5171,9 @@ BattleCommand_ForceSwitch:
 	jp StdBattleTextbox
 
 CheckPlayerHasMonToSwitchTo:
-; BEGIN TRUE-SOLO MOD: ONLY ONE POKEMON TO SWITCH TO
-.trueSoloBeginMod
-	ccf
-	ret
-.trueSoloEndMod
-; END TRUE-SOLO MOD
+	ld a, [ModSoloModSettings]
+	bit MOD_SOLO_MOD_PHASING_MODIFICATIONS, a
+	jr nz, .none_to_switch
 
 	ld a, [wPartyCount]
 	ld d, a
@@ -5199,6 +5196,7 @@ CheckPlayerHasMonToSwitchTo:
 	dec d
 	jr nz, .loop
 
+.none_to_switch
 	scf
 	ret
 

@@ -244,15 +244,13 @@ PokeBallEffect:
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jp z, .catch_without_fail
+
+	ld a, [ModRNGSettings]
+	bit MOD_RNG_GUARANTEE_CATCHES, a
+	jp nz, .catch_without_fail
+
 	ld a, [wCurItem]
 	cp MASTER_BALL
-
-	; MASTER BALL MOD: ALL BALLS WORK LIKE MASTER BALLS
-.masterBallModStart
-	xor a
-.masterBallModEnd
-	; END OF MASTER BALL MOD
-
 	jp z, .catch_without_fail
 	ld a, [wCurItem]
 	ld c, a

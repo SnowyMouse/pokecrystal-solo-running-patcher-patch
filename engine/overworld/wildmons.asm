@@ -174,9 +174,13 @@ FindNest:
 	ret
 
 TryWildEncounter::
-; Try to trigger a wild encounter.
-	call DisableEarlyEncounters
+	; Check if the early encounters mod is enabled
+	ld a, [ModRNGSettings]
+	bit MOD_RNG_EARLY_ENCOUNTERS_DISABLED, a
+	call nz, DisableEarlyEncounters
 	jr nz, .no_battle
+
+; Try to trigger a wild encounter.
 	call .EncounterRate
 	jr nc, .no_battle
 	call ChooseWildEncounter
@@ -219,7 +223,7 @@ DisableEarlyEncounters:
 	call EventFlagAction
 	ld a, c
 	and a
-	ret nz
+	jr nz, .enabled
 
 	; Get the map and map group
 	ld a, [wMapGroup]
@@ -238,7 +242,13 @@ DisableEarlyEncounters:
 	jr nz, .loop
 	cp c
 	jr nz, .loop
-	and a
+
+.disabled
+	and a ; all maps IDs are >0
+	ret
+
+.enabled
+	xor a
 	ret
 
 

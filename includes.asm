@@ -1,5 +1,7 @@
 INCLUDE "charmap.asm"
 
+INCLUDE "mods/mod_features.asm"
+
 INCLUDE "macros/asserts.asm"
 INCLUDE "macros/const.asm"
 INCLUDE "macros/predef.asm"
