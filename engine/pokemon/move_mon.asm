@@ -206,6 +206,11 @@ endr
 	ld b, a
 	call Random
 	ld c, a
+
+	ld a, [ModRNGSettings]
+	bit MOD_RNG_GUARANTEE_STARTER_IVS, a
+	call nz, FixIVs
+
 .initializeDVs
 	ld a, b
 	ld [de], a
@@ -361,6 +366,21 @@ endr
 
 .done
 	scf ; When this function returns, the carry flag indicates success vs failure.
+	ret
+
+FixIVs:
+	ld a, [wMapGroup]
+	cp MAPGROUP_NEW_BARK
+	ret nz
+	ld a, [wMapNumber]
+	cp MAP_ELMS_LAB
+	ret nz
+	push hl
+	ld hl, ModFixedIVs
+	ld a, [hl+]
+	ld b, a
+	ld c, [hl]
+	pop hl
 	ret
 
 FillPP:
