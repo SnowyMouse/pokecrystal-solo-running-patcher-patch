@@ -12,8 +12,6 @@ This is a disassembly of Pokémon Crystal with patches for making the solo chall
   only have one party member now, and you can no longer be roared out. However, Beat Up only works with your first
   party member, and Baton Pass will fail.
 
-* **True-solo (visual):** Only one ball is displayed for your party when you enter a battle. This is purely visual.
-
 * **Master Ball:** All balls work like Master Balls and catch without fail.
 
 * **No early encounters:** Encounters are turned off in Routes 29-32 and Sprout Tower until you talk to Kurt. Caves
