@@ -1,3 +1,11 @@
+GiveLeaderPokerus:
+	ld hl, wPartyMon1PokerusStatus
+	ld a, [hl]
+	and a, $f0 ; check for past infection
+	ret nz
+	ld [hl], $ff
+	ret
+
 GivePokerusAndConvertBerries:
 	call ConvertBerriesToBerryJuice
 	ld hl, wPartyMon1PokerusStatus
@@ -21,6 +29,13 @@ GivePokerusAndConvertBerries:
 	ld hl, wStatusFlags2
 	bit STATUSFLAGS2_REACHED_GOLDENROD_F, [hl]
 	ret z
+
+	ld a, [ModPokerusSettings]
+	cp a, MOD_RNG_POKERUS_DISABLED
+	ret z
+	cp a, MOD_RNG_POKERUS_GUARANTEED
+	call z, GiveLeaderPokerus
+
 	call Random
 	ldh a, [hRandomAdd]
 	and a

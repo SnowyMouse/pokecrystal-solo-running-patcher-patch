@@ -65,6 +65,11 @@ endr
 	ret
 
 .no_bite
+	; Retry?
+	ld a, [ModRNGSettings]
+	bit MOD_RNG_GUARANTEE_RODS, a
+	jr nz, .Fish
+
 	ld de, 0
 	ret
 
