@@ -8283,7 +8283,13 @@ ExitBattle:
 	call CheckPayDay
 	xor a
 	ld [wForceEvolution], a
+
+	ld a, [ModMiscSettings]
+	bit MOD_MISC_LEVEL_EVOLUTIONS_DISABLED, a
+	jr nz, .skip_evolve
 	predef EvolveAfterBattle
+
+.skip_evolve
 	farcall GivePokerusAndConvertBerries
 	ret
 
