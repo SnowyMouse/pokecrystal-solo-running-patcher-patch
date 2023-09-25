@@ -414,9 +414,51 @@ Script_pokepic:
 	jr nz, .ok
 	ld a, [wScriptVar]
 .ok
+	call OverwriteWithStarter
 	ld [wCurPartySpecies], a
 	farcall Pokepic
 	ret
+
+OverwriteWithStarter:
+	push hl
+	push bc
+
+	; check the party count (in case we have a pokedex)
+	ld b, a
+	ld a, [wPartyCount]
+	and a
+	jr nz, .done
+
+	; only works in elm's lab
+	ld a, [wMapGroup]
+	cp MAPGROUP_NEW_BARK
+	jr nz, .done
+	ld a, [wMapNumber]
+	cp MAP_ELMS_LAB
+	jr nz, .done
+
+	; restore the starter
+	ld a, b
+	ld hl, ModGrassStarter
+
+	cp CHIKORITA
+	jr z, .writeStarter
+	inc hl ; ModWaterStarter
+
+	cp TOTODILE
+	jr z, .writeStarter
+	inc hl ; ModFireStarter
+
+.writeStarter
+	ld b, [hl]
+
+.done
+	ld a, b
+	pop bc
+	pop hl
+
+	ret
+
 
 Script_closepokepic:
 	farcall ClosePokepic
@@ -790,6 +832,7 @@ Script_cry:
 	jr nz, .ok
 	ld a, [wScriptVar]
 .ok
+	call OverwriteWithStarter
 	call PlayMonCry
 	ret
 
@@ -1576,6 +1619,7 @@ Script_getmonname:
 	jr nz, .gotit
 	ld a, [wScriptVar]
 .gotit
+	call OverwriteWithStarter
 	ld [wNamedObjectIndex], a
 	call GetPokemonName
 	ld de, wStringBuffer1
@@ -1921,6 +1965,7 @@ Script_checkphonecall:
 
 Script_givepoke:
 	call GetScriptByte
+	call OverwriteWithStarter
 	ld [wCurPartySpecies], a
 	call GetScriptByte
 	ld [wCurPartyLevel], a

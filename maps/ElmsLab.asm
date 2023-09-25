@@ -166,6 +166,8 @@ CyndaquilPokeBallScript:
 	waitbutton
 	closepokepic
 	opentext
+	getmonname STRING_BUFFER_3, CYNDAQUIL ; <- will be automatically swapped by the game for the fire starter
+	callasm LoadTypeNameLowercase
 	writetext TakeCyndaquilText
 	yesorno
 	iffalse DidntChooseStarterScript
@@ -174,12 +176,12 @@ CyndaquilPokeBallScript:
 	writetext ChoseStarterText
 	promptbutton
 	waitsfx
-	getmonname STRING_BUFFER_3, CYNDAQUIL
+	getmonname STRING_BUFFER_3, CYNDAQUIL ; <- will be automatically swapped by the game for the fire starter
 	writetext ReceivedStarterText
 	playsound SFX_CAUGHT_MON
 	waitsfx
 	promptbutton
-	givepoke CYNDAQUIL, 5, BERRY
+	givepoke CYNDAQUIL, 5, BERRY ; <- will be automatically swapped by the game for the fire starter
 	closetext
 	readvar VAR_FACING
 	ifequal RIGHT, ElmDirectionsScript
@@ -196,6 +198,8 @@ TotodilePokeBallScript:
 	waitbutton
 	closepokepic
 	opentext
+	getmonname STRING_BUFFER_3, TOTODILE ; <- will be automatically swapped by the game for the water starter
+	callasm LoadTypeNameLowercase
 	writetext TakeTotodileText
 	yesorno
 	iffalse DidntChooseStarterScript
@@ -204,12 +208,12 @@ TotodilePokeBallScript:
 	writetext ChoseStarterText
 	promptbutton
 	waitsfx
-	getmonname STRING_BUFFER_3, TOTODILE
+	getmonname STRING_BUFFER_3, TOTODILE ; <- will be automatically swapped by the game for the water starter
 	writetext ReceivedStarterText
 	playsound SFX_CAUGHT_MON
 	waitsfx
 	promptbutton
-	givepoke TOTODILE, 5, BERRY
+	givepoke TOTODILE, 5, BERRY ; <- will be automatically swapped by the game for the water starter
 	closetext
 	applymovement PLAYER, AfterTotodileMovement
 	sjump ElmDirectionsScript
@@ -224,6 +228,8 @@ ChikoritaPokeBallScript:
 	waitbutton
 	closepokepic
 	opentext
+	getmonname STRING_BUFFER_3, CHIKORITA ; <- will be automatically swapped by the game for the grass starter
+	callasm LoadTypeNameLowercase
 	writetext TakeChikoritaText
 	yesorno
 	iffalse DidntChooseStarterScript
@@ -232,12 +238,12 @@ ChikoritaPokeBallScript:
 	writetext ChoseStarterText
 	promptbutton
 	waitsfx
-	getmonname STRING_BUFFER_3, CHIKORITA
+	getmonname STRING_BUFFER_3, CHIKORITA ; <- will be automatically swapped by the game for the grass starter
 	writetext ReceivedStarterText
 	playsound SFX_CAUGHT_MON
 	waitsfx
 	promptbutton
-	givepoke CHIKORITA, 5, BERRY
+	givepoke CHIKORITA, 5, BERRY ; <- will be automatically swapped by the game for the grass starter
 	closetext
 	applymovement PLAYER, AfterChikoritaMovement
 	sjump ElmDirectionsScript
@@ -858,20 +864,32 @@ LabWhereGoingText:
 
 TakeCyndaquilText:
 	text "ELM: You'll take"
-	line "CYNDAQUIL, the"
-	cont "fire #MON?"
+	line "@"
+	text_ram wStringBuffer3
+	text ", the"
+	cont "@"
+	text_ram wStringBuffer1
+	text " #MON?"
 	done
 
 TakeTotodileText:
 	text "ELM: Do you want"
-	line "TOTODILE, the"
-	cont "water #MON?"
+	line "@"
+	text_ram wStringBuffer3
+	text ", the"
+	cont "@"
+	text_ram wStringBuffer1
+	text " #MON?"
 	done
 
 TakeChikoritaText:
 	text "ELM: So, you like"
-	line "CHIKORITA, the"
-	cont "grass #MON?"
+	line "@"
+	text_ram wStringBuffer3
+	text ", the"
+	cont "@"
+	text_ram wStringBuffer1
+	text " #MON?"
 	done
 
 DidntChooseStarterText:
@@ -1410,3 +1428,30 @@ ElmsLab_MapEvents:
 	object_event  7,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, TotodilePokeBallScript, EVENT_TOTODILE_POKEBALL_IN_ELMS_LAB
 	object_event  8,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ChikoritaPokeBallScript, EVENT_CHIKORITA_POKEBALL_IN_ELMS_LAB
 	object_event  5,  3, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CopScript, EVENT_COP_IN_ELMS_LAB
+
+LoadTypeNameLowercase:
+	; Still has starter species
+	ld a, [wNamedObjectIndex]
+
+	; Load the type
+	push hl
+	call GetBaseData
+	pop hl
+	ld a, [wBaseType1]
+	ld [wNamedObjectIndex], a
+	predef GetTypeName
+
+	; to lowercase
+	push hl
+	ld hl, wStringBuffer1
+.loop
+	ld a, [hl]
+	cp $50
+	jr z, .done
+	sub a, "A" - "a"
+	ld [hl+], a
+	jr .loop
+
+.done
+	pop hl
+	ret
