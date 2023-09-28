@@ -6,3 +6,4 @@ ModFixedIVs::        dw $FFFF
 ModGrassStarter::    db CHIKORITA
 ModWaterStarter::    db TOTODILE
 ModFireStarter::     db CYNDAQUIL
+ModExpRate::         db %00000100 ; 6.2

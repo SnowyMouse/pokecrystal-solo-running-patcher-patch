@@ -6987,6 +6987,11 @@ GiveExperiencePoints:
 	bit 0, a
 	ret nz
 
+	; If exp rate is set to 0, disable
+	ld a, [ModExpRate]
+	and a
+	ret z
+
 	call .EvenlyDivideExpAmongParticipants
 	xor a
 	ld [wCurPartyMon], a
@@ -7079,6 +7084,7 @@ GiveExperiencePoints:
 	call Divide
 ; Boost Experience for traded Pokemon
 	pop bc
+	call ScaleExp
 	ld hl, MON_ID
 	add hl, bc
 	ld a, [wPlayerID]
@@ -7408,6 +7414,46 @@ BoostExp:
 	adc b
 	ldh [hProduct + 2], a
 	pop bc
+	ret
+
+ScaleExp:
+	ld a, [ModExpRate]
+	cp a, %00000100
+	ret z ; 1x, don't bother
+
+	ldh [hMultiplier], a
+	call Multiply
+
+	; divide by 4
+	push bc
+	ld c, 4
+
+	ld hl, hProduct+3
+.loop
+
+	ld a, [hl-]
+
+	srl a
+	srl a
+	ld b, a
+	ld a, [hl+]
+	and %11
+	add a
+	add a
+	swap a
+	or a, b
+	ld [hl-], a
+	dec c
+	jr nz, .loop
+
+	; on the unlikely chance we copied something we shouldn't have...
+	inc hl
+	ld a, [hl]
+	and a, $2
+	ld [hl], a
+
+	pop bc
+
 	ret
 
 Text_MonGainedExpPoint:
