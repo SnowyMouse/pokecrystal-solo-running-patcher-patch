@@ -6976,6 +6976,14 @@ FinishBattleAnim:
 	pop af
 	ret
 
+GetExpRateModifier:
+	ld a, [wBattleMode]
+	dec a
+	ld a, [ModExpRateTrainer]
+	ret nz
+	ld a, [ModExpRateWild]
+	ret
+
 GiveExperiencePoints:
 ; Give experience.
 ; Don't give experience if linked or in the Battle Tower.
@@ -6987,8 +6995,8 @@ GiveExperiencePoints:
 	bit 0, a
 	ret nz
 
-	; If exp rate is set to 0, disable
-	ld a, [ModExpRate]
+	; If exp rate is set to 0, don't bother
+	call GetExpRateModifier
 	and a
 	ret z
 
@@ -7084,7 +7092,6 @@ GiveExperiencePoints:
 	call Divide
 ; Boost Experience for traded Pokemon
 	pop bc
-	call ScaleExp
 	ld hl, MON_ID
 	add hl, bc
 	ld a, [wPlayerID]
@@ -7103,9 +7110,8 @@ GiveExperiencePoints:
 .no_boost
 ; Boost experience for a Trainer Battle
 	ld [wStringBuffer2 + 2], a
-	ld a, [wBattleMode]
-	dec a
-	call nz, BoostExp
+	call GetExpRateModifier
+	call ScaleExp
 ; Boost experience for Lucky Egg
 	push bc
 	ld a, MON_ITEM
@@ -7397,27 +7403,10 @@ GiveExperiencePoints:
 	ret
 
 BoostExp:
-; Multiply experience by 1.5x
-	push bc
-; load experience value
-	ldh a, [hProduct + 2]
-	ld b, a
-	ldh a, [hProduct + 3]
-	ld c, a
-; halve it
-	srl b
-	rr c
-; add it back to the whole exp value
-	add c
-	ldh [hProduct + 3], a
-	ldh a, [hProduct + 2]
-	adc b
-	ldh [hProduct + 2], a
-	pop bc
-	ret
+	ld a, %00000110
 
+; Scale based on the contents of `a`
 ScaleExp:
-	ld a, [ModExpRate]
 	cp a, %00000100
 	ret z ; 1x, don't bother
 
