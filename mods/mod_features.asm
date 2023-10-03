@@ -3,7 +3,7 @@ DEF MOD_SOLO_MOD_VISUAL                 EQU 0 ; show 1 ball when entering battle
 DEF MOD_SOLO_MOD_BLACKOUT_AUTOMATICALLY EQU 1 ; blackout if your leader faints
 DEF MOD_SOLO_MOD_AI_MODIFICATIONS       EQU 2 ; AI ignore other party members for choosing moves
 DEF MOD_SOLO_MOD_BEAT_UP_MODIFICATIONS  EQU 3 ; beat up only uses slot 1
-DEF MOD_SOLO_MOD_PHASING_MODIFICATIONS  EQU 4 ; block roar/whirlwind
+DEF MOD_SOLO_MOD_PHASING_MODIFICATIONS  EQU 4 ; block roar/whirlwind/baton pass
 
 ; Change stat EXP
 DEF MOD_RNG_EARLY_ENCOUNTERS_DISABLED   EQU 0 ; disable early encounters in requires routes until Kurt is spoken to

@@ -165,7 +165,7 @@ CheckAnyOtherAlivePartyMons:
 	ld hl, wPartyMon1HP
 
 	ld a, [ModSoloModSettings]
-	bit MOD_SOLO_MOD_VISUAL, a
+	bit MOD_SOLO_MOD_PHASING_MODIFICATIONS, a
 	ld a, 1
 	jr nz, .next
 	ld a, [wPartyCount]
