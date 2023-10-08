@@ -59,7 +59,7 @@ _CheckTrainerBattle::
 
 	ld a, [ModRNGSettings]
 	bit MOD_RNG_SPINNERS_DISABLED, a
-	call nz, .denyspin
+	call nz, DenySpin
 	jr c, .next
 
 ; And hasn't already been beaten
@@ -105,8 +105,8 @@ _CheckTrainerBattle::
 	ld [wSeenTrainerDirection], a
 	jr LoadTrainer_continue
 
-; Check if the spinner should look away from the player if they are facing it (returns)
-.denyspin
+; Check if a possible spinner should look away if they are facing the player
+DenySpin:
 	ld hl, MAPOBJECT_MOVEMENT
 	add hl, de
 	ld a, [hl]
